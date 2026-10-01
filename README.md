@@ -70,10 +70,31 @@ license = "MIT"               # SPDX; the text is copied from the checkout
 ```
 
 Queries: `highlights.scm`, `injections.scm` and `tags.scm` are taken
-from the grammar's own `queries/` at the revision; a file in this
-repository's `queries/` replaces the one of its name. `indents.scm` is
-only ever this repository's: kawoosh reads helix's dialect, and a
-grammar's repository carries nvim's.
+from the grammar's own `queries/` at the revision. A file in this
+repository's `queries/` replaces the one of its name — or goes after
+it, when the comments it opens with say `; extends`: a reader gives a
+node two patterns match to the later one, so a few patterns added
+change a few captures and the rest stay the grammar's.
+
+```scheme
+; grammars/zig/queries/highlights.scm
+; extends
+((identifier) @constant
+  (#match? @constant "^[A-Z][A-Z0-9_]*$"))
+```
+
+`indents.scm` is only ever this repository's: kawoosh reads helix's
+dialect — `@indent`, `@outdent`, `@align` with `@anchor`, `@extend`,
+the predicates `#not-kind-eq?`, `#same-line?`, `#not-same-line?`,
+`#one-line?`, `#not-one-line?`, and `#set! "scope" "all"|"tail"` — and
+a grammar's repository carries nvim's. The check refuses one in another
+dialect, since kawoosh would refuse the grammar whole. Most are helix's
+own, changed where the grammar pinned here or its language's usual
+style asked, and each says so at its top; a few are written here. One
+goes in when kawoosh's indenter, given the query, leaves every line of
+the grammar's sample where it is — tried from kawoosh
+(`KAWOOSH_GRAMMARS_REPO=. cargo nextest run -p kawoosh --test
+grammars`, after a build here), since the indenter is its own.
 
 To add one: the directory, the `grammar.toml`, a `sample.*` that uses
 the language broadly, and `cargo run -- check NAME`, which builds this
@@ -133,4 +154,6 @@ A tag `rN` on main builds and publishes on both hosts:
 
 The builder and what is written here are MIT (`LICENSE`). Each grammar
 is under its own licence, named in its `grammar.toml` and carried in
-its archive.
+its archive. An `indents.scm` that says it is from helix is under the
+Mozilla Public License 2.0 (`LICENSES/MPL-2.0.txt`), as helix is; the
+file says so, and goes into its grammar's archive as it is.

@@ -32,9 +32,9 @@ defmodule Sample.Shape do
     |> Enum.filter(fn a -> a < @limit end)
     |> Enum.each(&IO.puts/1)
 
-    with {:ok, n} <- parse("42"),
-         shape when not is_nil(shape) <- List.first(shapes) do
-      IO.puts("#{n}: #{describe(shape)}")
+    with {:ok, n} <- parse("42") do
+      shapes |> List.first() |> describe() |> IO.puts()
+      IO.puts(n)
     else
       :error -> raise ArgumentError, "not a number"
     end

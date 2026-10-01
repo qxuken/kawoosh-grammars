@@ -21,10 +21,7 @@ let area = function
 let rec largest = function
   | [] -> None
   | [ x ] -> Some x
-  | x :: rest -> (
-      match largest rest with
-      | Some y when y > x -> Some y
-      | _ -> Some x)
+  | x :: rest -> max (Some x) (largest rest)
 
 let length p = sqrt ((p.x *. p.x) +. (p.y *. p.y))
 

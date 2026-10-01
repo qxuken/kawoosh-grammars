@@ -5,6 +5,10 @@ SOURCES = $(wildcard src/*.c)
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = sample
 
+ifeq ($(DEBUG),1)
+CFLAGS += -g
+endif
+
 .PHONY: all clean test
 
 all: $(TARGET)
@@ -14,10 +18,6 @@ $(TARGET): $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
-
-ifeq ($(DEBUG),1)
-CFLAGS += -g
-endif
 
 test: all
 	./$(TARGET) --test

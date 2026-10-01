@@ -1,7 +1,9 @@
 //! A grammar's queries as its archive holds them: the checkout's own,
-//! the repository's laid over them file by file, and in front of each
-//! the same file of every grammar it inherits — so what is shipped is
-//! whole and nobody downstream resolves an `; inherits:`.
+//! the repository's laid over them file by file — in the checkout's
+//! place, or after it when the file says `; extends` — and in front of
+//! each the same file of every grammar it inherits. What is shipped is
+//! whole: nobody downstream resolves an `; inherits:` or an
+//! `; extends`.
 
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -18,7 +20,10 @@ const UPSTREAM: [&str; 3] = ["highlights.scm", "injections.scm", "tags.scm"];
 
 /// A grammar's queries before inheritance: the checkout's (beside the
 /// grammar, else at the root), then every `.scm` of the repository's
-/// `queries/`, which replaces the checkout's of that name.
+/// `queries/` — which replaces the checkout's of that name, or, saying
+/// `; extends` in the comments at its top, goes after it: a reader
+/// gives a node two patterns match to the later, so a few patterns
+/// added change a few captures and the rest stay the grammar's.
 pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
     let mut set = Set::new();
     let dirs = [
@@ -39,7 +44,18 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
             let path = entry.map_err(|e| e.to_string())?.path();
             if path.extension().is_some_and(|e| e == "scm") {
                 let name = path.file_name().unwrap().to_string_lossy().into_owned();
-                set.insert(name, read(&path)?);
+                let ours = read(&path)?;
+                match set.get_mut(&name) {
+                    Some(theirs) if extends(&ours) => {
+                        if !theirs.ends_with('\n') {
+                            theirs.push('\n');
+                        }
+                        theirs.push_str(&ours);
+                    }
+                    _ => {
+                        set.insert(name, ours);
+                    }
+                }
             }
         }
     }
@@ -53,6 +69,15 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
         }
     }
     Ok(set)
+}
+
+/// Whether a query file says `; extends` — nvim's word for it — in the
+/// comments it opens with, before its first pattern.
+fn extends(text: &str) -> bool {
+    text.lines()
+        .map(str::trim)
+        .take_while(|l| l.is_empty() || l.starts_with(';'))
+        .any(|l| l.trim_start_matches(';').trim() == "extends")
 }
 
 fn read(path: &Path) -> Result<String, String> {
@@ -173,6 +198,36 @@ mod tests {
                 ("indents.scm".into(), "helix's dialect".into()),
             ])
         );
+        std::fs::remove_dir_all(t).unwrap();
+    }
+
+    #[test]
+    fn a_file_that_says_extends_goes_after_the_checkout_s() {
+        let t = temp("extends");
+        let (checkout, dir) = (t.join("checkout"), t.join("grammars/zig"));
+        put(
+            &checkout.join("queries/highlights.scm"),
+            "(identifier) @variable",
+        );
+        put(&checkout.join("queries/tags.scm"), "theirs");
+        put(
+            &dir.join("queries/highlights.scm"),
+            ";; A fix or two.\n; extends\n\n(type_identifier) @type\n",
+        );
+        // Said after a pattern, it is a comment like any other.
+        put(&dir.join("queries/tags.scm"), "(x) @name\n; extends\n");
+        // With nothing of the checkout's to go after, it is the file.
+        put(
+            &dir.join("queries/indents.scm"),
+            "; extends\n(block) @indent\n",
+        );
+        let set = own(&checkout, &spec("zig", &dir, &[])).unwrap();
+        assert_eq!(
+            set["highlights.scm"],
+            "(identifier) @variable\n;; A fix or two.\n; extends\n\n(type_identifier) @type\n"
+        );
+        assert_eq!(set["tags.scm"], "(x) @name\n; extends\n");
+        assert_eq!(set["indents.scm"], "; extends\n(block) @indent\n");
         std::fs::remove_dir_all(t).unwrap();
     }
 

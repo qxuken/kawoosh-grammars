@@ -74,8 +74,70 @@ pub fn grammar(lib: &Path, symbol: &str, queries: &Set) -> Result<tree_sitter::L
                 "{file}: no @{capture} capture; replace it with one that has, in queries/"
             ));
         }
+        if file == "indents.scm" {
+            indents(&query)?;
+        }
     }
     Ok(language)
+}
+
+/// The predicates an indent query may use past tree-sitter's own, in
+/// the dialect kawoosh reads: helix's.
+const INDENT_PREDICATES: [&str; 5] = [
+    "not-kind-eq?",
+    "same-line?",
+    "not-same-line?",
+    "one-line?",
+    "not-one-line?",
+];
+
+/// The captures of that dialect.
+const INDENT_CAPTURES: [&str; 8] = [
+    "indent",
+    "indent.always",
+    "outdent",
+    "outdent.always",
+    "align",
+    "anchor",
+    "extend",
+    "extend.prevent-once",
+];
+
+/// An `indents.scm` is in the dialect its reader knows: kawoosh refuses
+/// a grammar whole — its colours too — whose indent query uses a
+/// predicate it does not have or a `scope` that is not `all` or
+/// `tail`, so one is refused here first. A query with none of the
+/// dialect's captures is nvim's (`@indent.begin`), which would compile
+/// and do nothing.
+fn indents(query: &tree_sitter::Query) -> Result<(), String> {
+    for i in 0..query.pattern_count() {
+        for p in query.general_predicates(i) {
+            if !INDENT_PREDICATES.contains(&p.operator.as_ref()) {
+                return Err(format!(
+                    "indents.scm: no predicate #{} in the dialect kawoosh reads",
+                    p.operator
+                ));
+            }
+        }
+        for p in query.property_settings(i) {
+            if &*p.key == "scope" && !matches!(p.value.as_deref(), Some("all" | "tail")) {
+                return Err(format!(
+                    "indents.scm: scope {:?} is not all or tail",
+                    p.value.as_deref().unwrap_or("")
+                ));
+            }
+        }
+    }
+    if !query
+        .capture_names()
+        .iter()
+        .any(|c| INDENT_CAPTURES.contains(c))
+    {
+        return Err(
+            "indents.scm: none of @indent, @outdent, @align, @extend: not helix's dialect".into(),
+        );
+    }
+    Ok(())
 }
 
 /// Parses the sample: no ERROR and no MISSING node in its tree.

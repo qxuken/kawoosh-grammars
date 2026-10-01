@@ -4,8 +4,7 @@ import kotlin.math.sqrt
 
 /** A sample. */
 data class Point(val x: Double, val y: Double = 0.0) {
-    val length: Double
-        get() = sqrt(x * x + y * y)
+    val length: Double get() = sqrt(x * x + y * y)
 }
 
 sealed interface Shape {
