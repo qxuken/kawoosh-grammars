@@ -1,0 +1,6 @@
+filenames = ["meson.build", "meson_options.txt", "meson.options"]
+
+[source]
+repo = "https://github.com/Decodetalkers/tree-sitter-meson"
+rev = "aa8d472034956f94f51f2ef2cbfec4cc07efbfde"
+license = "MIT"

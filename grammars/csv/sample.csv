@@ -1,0 +1,5 @@
+name,kind,width,height,note
+first,circle,1.0,,"a round one"
+second,rect,2.0,3.0,"with, a comma"
+third,empty,,,
+fourth,rect,10,0.5,plain

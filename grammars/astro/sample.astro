@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "A sample";
+const items = ["one", "two", "three"];
+---
+
+<!-- A comment. -->
+<Layout title={title}>
+  <main class="page">
+    <h1>{title}</h1>
+    <ul>
+      {items.map((item) => <li>{item}</li>)}
+    </ul>
+    <a href="/about">About</a>
+  </main>
+</Layout>
+
+<style>
+  .page {
+    margin: 0 auto;
+  }
+</style>

@@ -1,0 +1,6 @@
+extensions = ["elm"]
+
+[source]
+repo = "https://github.com/razzeee/tree-sitter-elm"
+rev = "e1e8fea161a1e66f3997855d316be2a43e4e956f"
+license = "MIT"

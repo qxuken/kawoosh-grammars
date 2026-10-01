@@ -1,0 +1,9 @@
+# A sample.
+* text=auto eol=lf
+*.rs text diff=rust
+*.png binary
+*.lock -diff linguist-generated=true
+docs/** linguist-documentation
+/vendor/ export-ignore
+Makefile text whitespace=tab-in-indent
+[attr]binary -diff -merge -text

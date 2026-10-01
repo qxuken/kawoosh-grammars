@@ -1,0 +1,34 @@
+// A sample.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Colour {
+  RED
+  GREEN
+  BLUE
+}
+
+model Shape {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  colour    Colour   @default(RED)
+  radius    Float?
+  createdAt DateTime @default(now())
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+
+  @@index([ownerId, name])
+  @@map("shapes")
+}
+
+model User {
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  shapes Shape[]
+}

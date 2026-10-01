@@ -1,0 +1,8 @@
+extensions = ["mk", "mak"]
+filenames = ["Makefile", "makefile", "GNUmakefile"]
+aliases = ["makefile"]
+
+[source]
+repo = "https://github.com/alemuller/tree-sitter-make"
+rev = "a4b9187417d6be349ee5fd4b6e77b4172c6827dd"
+license = "MIT"

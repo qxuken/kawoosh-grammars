@@ -1,0 +1,7 @@
+extensions = ["r"]
+shebangs = ["Rscript"]
+
+[source]
+repo = "https://github.com/r-lib/tree-sitter-r"
+rev = "58a22794466c0fc15b0d3b40531db751593721e8"
+license = "MIT"

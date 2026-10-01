@@ -1,0 +1,13 @@
+extensions = ["star", "bzl"]
+filenames = ["BUILD", "BUILD.bazel", "WORKSPACE", "WORKSPACE.bazel"]
+aliases = ["bazel"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-starlark"
+rev = "a453dbf3ba433db0e5ec621a38a7e59d72e4dc69"
+license = "MIT"
+
+[queries]
+# Its injections.scm is nvim's old spelling, a capture named for the
+# language; nothing it injects is worth an override here yet.
+skip = ["injections.scm"]

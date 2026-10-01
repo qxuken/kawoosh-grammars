@@ -1,0 +1,7 @@
+extensions = ["cmake"]
+filenames = ["CMakeLists.txt"]
+
+[source]
+repo = "https://github.com/uyha/tree-sitter-cmake"
+rev = "ca627bb5828616b6246aafdc3c3222789e728e37"
+license = "MIT"

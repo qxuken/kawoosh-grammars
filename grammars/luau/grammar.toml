@@ -1,0 +1,6 @@
+extensions = ["luau"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-luau"
+rev = "a8914d6c1fc5131f8e1c13f769fa704c9f5eb02f"
+license = "MIT"

@@ -1,0 +1,6 @@
+extensions = ["ninja"]
+
+[source]
+repo = "https://github.com/alemuller/tree-sitter-ninja"
+rev = "0a95cfdc0745b6ae82f60d3a339b37f19b7b9267"
+license = "MIT"

@@ -1,0 +1,7 @@
+extensions = ["el"]
+aliases = ["emacs-lisp"]
+
+[source]
+repo = "https://github.com/Wilfred/tree-sitter-elisp"
+rev = "0cbf0906d9ee707c8c109422fba9cdd17ae13dcf"
+license = "MIT"

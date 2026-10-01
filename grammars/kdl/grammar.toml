@@ -1,0 +1,6 @@
+extensions = ["kdl"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-kdl"
+rev = "e8ff98a113e175b84b92ec2096820517c1e10a66"
+license = "MIT"

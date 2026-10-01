@@ -1,0 +1,6 @@
+extensions = ["dart"]
+
+[source]
+repo = "https://github.com/UserNobody14/tree-sitter-dart"
+rev = "be07cf7118d3dba06236a3f19541685a68209934"
+license = "MIT"

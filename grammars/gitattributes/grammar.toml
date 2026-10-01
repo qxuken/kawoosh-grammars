@@ -1,0 +1,6 @@
+filenames = [".gitattributes"]
+
+[source]
+repo = "https://github.com/ObserverOfTime/tree-sitter-gitattributes"
+rev = "1b7af09d45b579f9f288453b95ad555f1f431645"
+license = "MIT"

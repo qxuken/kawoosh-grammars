@@ -28,7 +28,7 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
     if let Some(dir) = dirs.iter().find(|d| d.is_dir()) {
         for name in UPSTREAM {
             let file = dir.join(name);
-            if file.is_file() {
+            if file.is_file() && !spec.skip.iter().any(|s| s == name) {
                 set.insert(name.to_string(), read(&file)?);
             }
         }
@@ -157,6 +157,13 @@ mod tests {
         put(&checkout.join("queries/locals.scm"), "not read");
         put(&dir.join("queries/highlights.scm"), "ours");
         put(&dir.join("queries/indents.scm"), "helix's dialect");
+        let mut skipping = spec("zig", &dir, &[]);
+        skipping.skip = vec!["injections.scm".into()];
+        assert!(
+            !own(&checkout, &skipping)
+                .unwrap()
+                .contains_key("injections.scm")
+        );
         let set = own(&checkout, &spec("zig", &dir, &[])).unwrap();
         assert_eq!(
             set,

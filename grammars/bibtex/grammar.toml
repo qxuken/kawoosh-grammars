@@ -1,0 +1,11 @@
+extensions = ["bib"]
+aliases = ["bib"]
+
+[source]
+repo = "https://github.com/latex-lsp/tree-sitter-bibtex"
+rev = "8d04ed27b3bc7929f14b7df9236797dab9f3fa66"
+license = "MIT"
+
+[queries]
+# Its tags.scm captures no @name.
+skip = ["tags.scm"]

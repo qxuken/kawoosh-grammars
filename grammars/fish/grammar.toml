@@ -1,0 +1,7 @@
+extensions = ["fish"]
+shebangs = ["fish"]
+
+[source]
+repo = "https://github.com/ram02z/tree-sitter-fish"
+rev = "b7f1d682941e0c62dfcd6bf9ef481638351bab16"
+license = "Unlicense"

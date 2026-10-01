@@ -1,0 +1,7 @@
+extensions = ["env"]
+filenames = [".env", ".env.local", ".env.example"]
+
+[source]
+repo = "https://github.com/pnx/tree-sitter-dotenv"
+rev = "a16f203ba05f8efedc780690cac217c095946c06"
+license = "MIT"

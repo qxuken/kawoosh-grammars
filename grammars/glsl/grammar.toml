@@ -1,0 +1,9 @@
+extensions = ["glsl", "vert", "frag", "geom", "comp"]
+
+[source]
+repo = "https://github.com/theHamsta/tree-sitter-glsl"
+rev = "24a6c8ef698e4480fecf8340d771fbcb5de8fbb4"
+license = "MIT"
+
+[queries]
+inherits = ["c"]

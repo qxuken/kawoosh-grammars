@@ -1,0 +1,6 @@
+extensions = ["gleam"]
+
+[source]
+repo = "https://github.com/gleam-lang/tree-sitter-gleam"
+rev = "cefbd6863983b4df3214b7934bde5e9ca63d5b7f"
+license = "Apache-2.0"

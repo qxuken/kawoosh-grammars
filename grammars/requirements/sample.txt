@@ -1,0 +1,9 @@
+# A sample.
+requests>=2.31,<3
+numpy==1.26.4
+flask[async]~=3.0
+pytest; python_version >= "3.9"
+-r base.txt
+-e ./local-package
+--index-url https://pypi.org/simple
+git+https://example.com/pkg.git@v1.0#egg=pkg

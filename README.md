@@ -65,7 +65,8 @@ rev = "6479aa13f32f701c383083d8b28360ebd682fb7d"   # a whole commit
 license = "MIT"               # SPDX; the text is copied from the checkout
 
 # [queries]
-# inherits = ["javascript"]   # grammars here whose queries go in front
+# inherits = ["c"]            # grammars here whose queries go in front
+# skip = ["injections.scm"]   # query files of the checkout not taken
 ```
 
 Queries: `highlights.scm`, `injections.scm` and `tags.scm` are taken
@@ -75,8 +76,16 @@ only ever this repository's: kawoosh reads helix's dialect, and a
 grammar's repository carries nvim's.
 
 To add one: the directory, the `grammar.toml`, a `sample.*` that uses
-the language broadly, and `cargo run -- build NAME`. To move one: a new
-`rev`, and the same.
+the language broadly, and `cargo run -- check NAME`, which builds this
+machine's library alone, runs the checks and writes nothing. To move
+one: a new `rev`, and the same. A sample is written here, not copied
+from the grammar's repository: it is this repository's, under its
+licence.
+
+A query file of the checkout that does not hold — an `injections.scm`
+in nvim's old spelling, a `tags.scm` with no `@name` — is replaced by
+one in `queries/`, or left out with `skip`. A grammar's known limits
+are said in a comment at the top of its `grammar.toml`.
 
 A grammar is refused when its checkout has no `src/parser.c` (it
 commits no generated parser) or its scanner is C++.
@@ -104,8 +113,9 @@ writes `dist/`. For each grammar the builder
    and adds the manifest's row.
 
 One grammar failing fails the build and writes no manifest.
-`cargo run -- build zig ruby` builds those alone; `cargo run -- list`
-says what is here.
+`cargo run -- build zig ruby` builds those alone, `cargo run -- check`
+is steps 1 to 4 for this machine alone, and `cargo run -- list` says
+what is here.
 
 The same sources and the same zig give the same bytes on one machine.
 Two machines are not promised to agree, so a host that builds its own

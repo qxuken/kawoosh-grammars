@@ -1,0 +1,11 @@
+extensions = ["ron"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-ron"
+rev = "78938553b93075e638035f624973083451b29055"
+license = "Apache-2.0"
+
+[queries]
+# Its injections.scm is nvim's old spelling, a capture named for the
+# language; nothing it injects is worth an override here yet.
+skip = ["injections.scm"]

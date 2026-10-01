@@ -1,0 +1,33 @@
+# A sample.
+project('sample', 'c',
+  version : '1.2.3',
+  default_options : ['c_std=c11', 'warning_level=2'])
+
+cc = meson.get_compiler('c')
+limit = 10
+sources = files('src/main.c', 'src/shape.c')
+
+deps = [dependency('threads')]
+m_dep = cc.find_library('m', required : false)
+if m_dep.found()
+  deps += m_dep
+endif
+
+conf = configuration_data()
+conf.set('LIMIT', limit)
+conf.set_quoted('VERSION', meson.project_version())
+configure_file(output : 'config.h', configuration : conf)
+
+exe = executable('sample', sources,
+  dependencies : deps,
+  install : true)
+
+foreach name : ['one', 'two']
+  test('test-' + name, exe, args : ['--test', name])
+endforeach
+
+if get_option('docs') and host_machine.system() != 'windows'
+  subdir('docs')
+else
+  message('no docs')
+endif

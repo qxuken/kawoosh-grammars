@@ -1,0 +1,19 @@
+<%# A sample. %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @title %></title>
+  </head>
+  <body>
+    <% if @shapes.any? %>
+      <ul>
+        <% @shapes.each do |shape| %>
+          <li class="<%= shape.kind %>"><%= shape.name %>: <%= shape.area.round(2) %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No shapes.</p>
+    <% end %>
+    <%- render partial: "footer" -%>
+  </body>
+</html>

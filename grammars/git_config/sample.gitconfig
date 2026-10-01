@@ -1,0 +1,18 @@
+# A sample.
+[user]
+	name = Jane Doe
+	email = jane@example.com
+[core]
+	editor = kawoosh edit --wait
+	autocrlf = false
+[alias]
+	st = status --short
+	lg = log --oneline --graph
+[remote "origin"]
+	url = https://example.com/sample.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig-work
+; Another comment.
+[pull]
+	rebase = true

@@ -1,0 +1,27 @@
+# A sample.
+ninja_required_version = 1.10
+
+cc = cc
+cflags = -O2 -Wall
+builddir = build
+
+rule compile
+  command = $cc $cflags -MD -MF $out.d -c $in -o $out
+  depfile = $out.d
+  description = CC $out
+
+rule link
+  command = $cc -o $out $in $libs
+  description = LINK $out
+
+build $builddir/main.o: compile src/main.c
+build $builddir/shape.o: compile src/shape.c | src/shape.h
+  cflags = -O0 -g
+
+build sample: link $builddir/main.o $builddir/shape.o
+  libs = -lm
+
+build all: phony sample
+default all
+
+include rules.ninja

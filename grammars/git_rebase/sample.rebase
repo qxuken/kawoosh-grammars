@@ -1,0 +1,15 @@
+pick 1a2b3c4 Add the sample
+reword 2b3c4d5 Fix the sample's name
+squash 3c4d5e6 A fixup of the fix
+fixup 4d5e6f7 Another one
+edit 5e6f7a8 Stop here
+exec cargo test
+drop 6f7a8b9 Not this one
+label onto
+reset onto
+break
+
+# Rebase 0a1b2c3..6f7a8b9 onto 0a1b2c3 (7 commands)
+#
+# Commands:
+# p, pick <commit> = use commit

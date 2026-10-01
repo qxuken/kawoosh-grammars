@@ -1,0 +1,6 @@
+extensions = ["ini", "cfg"]
+
+[source]
+repo = "https://github.com/justinmk/tree-sitter-ini"
+rev = "e4018b5176132b4f3c5d6e61cea383f42288d0f5"
+license = "Apache-2.0"

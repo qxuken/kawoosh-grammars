@@ -1,0 +1,6 @@
+extensions = ["f90", "f95", "f03", "f08"]
+
+[source]
+repo = "https://github.com/stadelmanma/tree-sitter-fortran"
+rev = "7edacd2b21aa80057d9725384a1304a1c758e0f8"
+license = "MIT"

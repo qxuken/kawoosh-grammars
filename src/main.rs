@@ -4,10 +4,13 @@
 //! and the manifest that names them all, which is what kawoosh reads.
 //!
 //!   kawoosh-grammars build [NAME…] [--out DIR] [--work DIR] [--any-zig]
+//!   kawoosh-grammars check [NAME…] [--work DIR] [--any-zig]
 //!   kawoosh-grammars list
 //!
 //! `build` with names builds those (and fetches what they inherit); the
 //! manifest then lists only them, so a release is a build with none.
+//! `check` is the build's checks with this machine's library alone and
+//! nothing written: what adding or moving a grammar is tried with.
 
 mod archive;
 mod check;
@@ -61,15 +64,19 @@ struct Args {
     out: PathBuf,
     work: PathBuf,
     any_zig: bool,
+    /// `check`: this machine's library, the checks, and no archive.
+    check: bool,
 }
 
 fn main() -> ExitCode {
     let mut argv = std::env::args().skip(1);
     let result = match argv.next().as_deref() {
-        Some("build") => parse(argv).and_then(build),
+        Some("build") => parse(argv, false).and_then(build),
+        Some("check") => parse(argv, true).and_then(build),
         Some("list") => list(),
         _ => {
             eprintln!("usage: kawoosh-grammars build [NAME…] [--out DIR] [--work DIR] [--any-zig]");
+            eprintln!("       kawoosh-grammars check [NAME…] [--work DIR] [--any-zig]");
             eprintln!("       kawoosh-grammars list");
             return ExitCode::from(2);
         }
@@ -83,12 +90,13 @@ fn main() -> ExitCode {
     }
 }
 
-fn parse(mut argv: impl Iterator<Item = String>) -> Result<Args, String> {
+fn parse(mut argv: impl Iterator<Item = String>, check: bool) -> Result<Args, String> {
     let mut args = Args {
         names: Vec::new(),
         out: PathBuf::from("dist"),
         work: PathBuf::from("work"),
         any_zig: false,
+        check,
     };
     while let Some(a) = argv.next() {
         let mut value = |flag: &str| {
@@ -174,14 +182,21 @@ fn build(args: Args) -> Result<(), String> {
         return Err(failed.join("\n"));
     }
 
-    std::fs::create_dir_all(&args.out).map_err(|e| format!("{}: {e}", args.out.display()))?;
+    if !args.check {
+        std::fs::create_dir_all(&args.out).map_err(|e| format!("{}: {e}", args.out.display()))?;
+    }
     let mut grammars = BTreeMap::new();
     for spec in &chosen {
         let started = Instant::now();
         let row = queries::whole(&spec.name, &specs, &owns)
             .and_then(|queries| one(spec, &checkouts[&spec.name], &queries, &zig, host, &args));
         match row {
-            Ok(row) => {
+            Ok(None) => println!(
+                "{:16} ok  {:.1}s",
+                spec.name,
+                started.elapsed().as_secs_f64()
+            ),
+            Ok(Some(row)) => {
                 println!(
                     "{:16} {:>5} KiB  abi {}  {:.1}s",
                     spec.name,
@@ -199,6 +214,9 @@ fn build(args: Args) -> Result<(), String> {
     }
     if !failed.is_empty() {
         return Err(failed.join("\n"));
+    }
+    if args.check {
+        return Ok(());
     }
 
     let manifest = Manifest {
@@ -219,7 +237,8 @@ fn build(args: Args) -> Result<(), String> {
 }
 
 /// One grammar: its libraries built, the host's checked, the archive
-/// written, and its row of the manifest.
+/// written, and its row of the manifest — or, for `check`, the host's
+/// library alone, checked, and no row.
 fn one(
     spec: &Spec,
     checkout: &Path,
@@ -227,16 +246,19 @@ fn one(
     zig: &Zig,
     host: &compile::Target,
     args: &Args,
-) -> Result<Row, String> {
+) -> Result<Option<Row>, String> {
     let sources = compile::sources(&checkout.join(&spec.source.path))?;
     let licenses = source::licenses(checkout, &spec.source.path)?;
-    let sample = spec.sample()?;
+    let targets: Vec<&compile::Target> = TARGETS
+        .iter()
+        .filter(|t| !args.check || t.name == host.name)
+        .collect();
 
     let dir = args.work.join("build").join(&spec.name);
     let _ = std::fs::remove_dir_all(&dir);
     let lib_at = |t: &compile::Target| dir.join(t.name).join(format!("parser.{}", t.ext));
     let built: Vec<Result<(), String>> = std::thread::scope(|scope| {
-        let handles: Vec<_> = TARGETS
+        let handles: Vec<_> = targets
             .iter()
             .map(|t| scope.spawn(|| zig.build(&sources, t, &lib_at(t))))
             .collect();
@@ -250,7 +272,14 @@ fn one(
         return Err(errors.join("\n"));
     }
 
-    let abi = check::check(&lib_at(host), &spec.symbol, queries, &sample)?;
+    // The queries first: a grammar with no sample yet is still told
+    // whether its queries hold.
+    let language = check::grammar(&lib_at(host), &spec.symbol, queries)?;
+    let abi = language.abi_version();
+    check::sample(&language, &spec.sample()?)?;
+    if args.check {
+        return Ok(None);
+    }
 
     let mut files: Vec<(String, Vec<u8>)> = Vec::new();
     for t in &TARGETS {
@@ -285,7 +314,7 @@ fn one(
     }
     let bytes = std::fs::read(&path).map_err(|e| format!("{}: {e}", path.display()))?;
 
-    Ok(Row {
+    Ok(Some(Row {
         extensions: spec.extensions.clone(),
         filenames: spec.filenames.clone(),
         shebangs: spec.shebangs.clone(),
@@ -300,5 +329,5 @@ fn one(
         archive,
         size: bytes.len() as u64,
         blake3: blake3::hash(&bytes).to_hex().to_string(),
-    })
+    }))
 }

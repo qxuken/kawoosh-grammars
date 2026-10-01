@@ -1,0 +1,20 @@
+// A sample.
+digraph sample {
+    rankdir = LR;
+    node [shape = box, style = rounded];
+    edge [color = "#3366ff"];
+
+    start [label = "Start", shape = circle];
+    parse -> check -> build;
+    start -> parse [label = "open"];
+    build -> done [style = dashed, weight = 2];
+
+    subgraph cluster_checks {
+        label = "checks";
+        check; verify;
+    }
+
+    /* A block comment. */
+    check -> verify [dir = both];
+    done [shape = doublecircle];
+}

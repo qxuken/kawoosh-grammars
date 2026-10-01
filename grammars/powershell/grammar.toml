@@ -1,0 +1,8 @@
+extensions = ["ps1", "psm1", "psd1"]
+shebangs = ["pwsh"]
+aliases = ["pwsh"]
+
+[source]
+repo = "https://github.com/airbus-cert/tree-sitter-powershell"
+rev = "e7bd348c49fdfd5c853a146a670965ba516a6239"
+license = "MIT"

@@ -1,0 +1,22 @@
+// A sample.
+Scene(
+    name: "sample",
+    limit: 10,
+    ratio: 0.5,
+    enabled: true,
+    colour: Green,
+    position: (3.0, 4.0),
+    shapes: [
+        Circle(radius: 1.0),
+        Rect(width: 2.0, height: 3.0),
+        Empty,
+    ],
+    labels: {
+        "kind": "demo",
+        "owner": "nobody",
+    },
+    /* A block comment. */
+    parent: None,
+    child: Some(Point(x: 1, y: 0)),
+    initial: 'a',
+)

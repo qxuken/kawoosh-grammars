@@ -1,0 +1,7 @@
+filenames = [".gitconfig", ".gitmodules"]
+aliases = ["gitconfig"]
+
+[source]
+repo = "https://github.com/the-mikedavis/tree-sitter-git-config"
+rev = "3a61756a81a86291a0f48e3eeeaa0692b9981aa9"
+license = "MIT"

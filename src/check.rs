@@ -27,8 +27,9 @@ fn language(lib: &Path, symbol: &str) -> Result<tree_sitter::Language, String> {
     Ok(unsafe { LanguageFn::from_raw(raw) }.into())
 }
 
-/// Checks the grammar, answering its ABI.
-pub fn check(lib: &Path, symbol: &str, queries: &Set, sample: &Path) -> Result<usize, String> {
+/// Checks the grammar and its queries, answering the language for
+/// [`sample`] to parse with. Its ABI is `abi_version()`.
+pub fn grammar(lib: &Path, symbol: &str, queries: &Set) -> Result<tree_sitter::Language, String> {
     let language = language(lib, symbol)?;
     let abi = language.abi_version();
     let (min, max) = (
@@ -74,9 +75,14 @@ pub fn check(lib: &Path, symbol: &str, queries: &Set, sample: &Path) -> Result<u
             ));
         }
     }
+    Ok(language)
+}
+
+/// Parses the sample: no ERROR and no MISSING node in its tree.
+pub fn sample(language: &tree_sitter::Language, sample: &Path) -> Result<(), String> {
     let text = std::fs::read_to_string(sample).map_err(|e| format!("{}: {e}", sample.display()))?;
     let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&language).map_err(|e| e.to_string())?;
+    parser.set_language(language).map_err(|e| e.to_string())?;
     let tree = parser
         .parse(&text, None)
         .ok_or("the sample did not parse")?;
@@ -94,7 +100,7 @@ pub fn check(lib: &Path, symbol: &str, queries: &Set, sample: &Path) -> Result<u
             at.column + 1
         ));
     }
-    Ok(abi)
+    Ok(())
 }
 
 /// The first ERROR or MISSING node under `node`, in the text's order.

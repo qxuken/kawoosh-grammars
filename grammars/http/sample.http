@@ -1,0 +1,16 @@
+### A sample
+GET https://example.com/api/shapes?limit=10 HTTP/1.1
+Accept: application/json
+Authorization: Bearer token-value
+
+###
+POST https://example.com/api/shapes
+Content-Type: application/json
+
+{
+  "kind": "circle",
+  "radius": 1.0
+}
+
+###
+DELETE https://example.com/api/shapes/42

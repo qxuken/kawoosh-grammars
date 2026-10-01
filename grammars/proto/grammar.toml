@@ -1,0 +1,7 @@
+extensions = ["proto"]
+aliases = ["protobuf"]
+
+[source]
+repo = "https://github.com/coder3101/tree-sitter-proto"
+rev = "6c878d18628ebbff3474479d2fdd6d8ba1954c3e"
+license = "MIT"

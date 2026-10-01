@@ -1,0 +1,6 @@
+filenames = ["ssh_config", "sshd_config"]
+
+[source]
+repo = "https://github.com/ObserverOfTime/tree-sitter-ssh-config"
+rev = "0c35b243392268f48fd096607da192d76c843398"
+license = "MIT"

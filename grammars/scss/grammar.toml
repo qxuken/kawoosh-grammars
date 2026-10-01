@@ -1,0 +1,8 @@
+# This grammar reads no map (`$m: (key: value)`) and no `%placeholder`:
+# a file with one parses with an ERROR there, and is painted around it.
+extensions = ["scss"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-scss"
+rev = "2ef6d42e3ad7a8208900f9346f4529806ae0f9f9"
+license = "MIT"

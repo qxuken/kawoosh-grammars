@@ -48,6 +48,10 @@ pub struct Queries {
     /// one's, file by file.
     #[serde(default)]
     pub inherits: Vec<String>,
+    /// Query files of the checkout that are not taken: one that does
+    /// not compile, or says what this repository would rather not.
+    #[serde(default)]
+    pub skip: Vec<String>,
 }
 
 fn dot() -> String {
@@ -66,6 +70,7 @@ pub struct Spec {
     pub symbol: String,
     pub source: Source,
     pub inherits: Vec<String>,
+    pub skip: Vec<String>,
 }
 
 impl Spec {
@@ -83,6 +88,7 @@ impl Spec {
                 .unwrap_or_else(|| format!("tree_sitter_{}", name.replace('-', "_"))),
             source: f.source,
             inherits: f.queries.inherits,
+            skip: f.queries.skip,
         };
         spec.validate()?;
         Ok(spec)

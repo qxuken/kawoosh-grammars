@@ -1,0 +1,26 @@
+// A sample.
+package "sample" version="1.2.3" {
+    authors "Jane Doe" "Richard Roe"
+    license "MIT"
+    limit 10
+    enabled #true
+    ratio 0.5
+    nothing #null
+}
+
+/* A block comment. */
+layout {
+    pane size=1 borderless=#true {
+        plugin location="tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane
+        pane command="cargo" {
+            args "build" "--release"
+        }
+    }
+    /-pane "commented out"
+}
+
+(date)released "2026-10-01"
+path r#"C:\Users\sample"#

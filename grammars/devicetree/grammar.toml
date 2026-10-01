@@ -1,0 +1,6 @@
+extensions = ["dts", "dtsi"]
+
+[source]
+repo = "https://github.com/joelspadin/tree-sitter-devicetree"
+rev = "e78bf56f206cb47bee28a217423acb651e076848"
+license = "MIT"

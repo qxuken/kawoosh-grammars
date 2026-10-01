@@ -1,0 +1,7 @@
+extensions = ["ml"]
+
+[source]
+repo = "https://github.com/tree-sitter/tree-sitter-ocaml"
+rev = "a4ce49a6c17e88e7ca8350cfb666749d9a5c6630"
+path = "grammars/ocaml"
+license = "MIT"

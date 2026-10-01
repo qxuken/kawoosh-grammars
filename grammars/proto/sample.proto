@@ -1,0 +1,49 @@
+// A sample.
+syntax = "proto3";
+
+package sample.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "example.com/sample/v1;samplev1";
+
+enum Colour {
+  COLOUR_UNSPECIFIED = 0;
+  COLOUR_RED = 1;
+  COLOUR_GREEN = 2;
+}
+
+message Point {
+  double x = 1;
+  double y = 2;
+}
+
+message Shape {
+  string name = 1;
+  Colour colour = 2;
+  repeated Point points = 3;
+  map<string, string> labels = 4;
+  google.protobuf.Timestamp created = 5;
+
+  oneof kind {
+    double radius = 6;
+    Point size = 7;
+  }
+
+  reserved 8, 9;
+}
+
+message ListShapesRequest {
+  int32 limit = 1;
+}
+
+message ListShapesResponse {
+  repeated Shape shapes = 1;
+}
+
+service Shapes {
+  rpc ListShapes(ListShapesRequest) returns (ListShapesResponse);
+  rpc Watch(ListShapesRequest) returns (stream Shape) {
+    option deprecated = true;
+  }
+}

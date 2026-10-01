@@ -1,0 +1,8 @@
+extensions = ["erl", "hrl"]
+shebangs = ["escript"]
+aliases = ["erl"]
+
+[source]
+repo = "https://github.com/WhatsApp/tree-sitter-erlang"
+rev = "6ba4c762eb3065495e3db85697ffeecdf364ce35"
+license = "Apache-2.0"

@@ -1,0 +1,7 @@
+extensions = ["csv"]
+
+[source]
+repo = "https://github.com/amaanq/tree-sitter-csv"
+rev = "f6bf6e35eb0b95fbadea4bb39cb9709507fcb181"
+path = "csv"
+license = "MIT"

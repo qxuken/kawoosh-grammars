@@ -1,0 +1,6 @@
+filenames = ["requirements.txt"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-requirements"
+rev = "2c3bb291f497258ba417d052faa14a2dfee6d401"
+license = "MIT"

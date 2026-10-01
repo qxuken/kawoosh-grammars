@@ -1,0 +1,7 @@
+extensions = ["pl", "pm"]
+shebangs = ["perl"]
+
+[source]
+repo = "https://github.com/tree-sitter-perl/tree-sitter-perl"
+rev = "aa5600c8df1eb9ed111db72e20c741dd73ec336a"
+license = "MIT"

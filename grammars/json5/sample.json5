@@ -1,0 +1,17 @@
+// A sample.
+{
+  name: 'sample',
+  "limit": 10,
+  ratio: .5,
+  hex: 0xFF,
+  enabled: true,
+  nothing: null,
+  /* A block comment. */
+  shapes: [
+    { kind: 'circle', radius: 1.0 },
+    { kind: 'rect', width: 2, height: 3 },
+  ],
+  text: 'a line \
+continued',
+  big: +Infinity,
+}
