@@ -1,0 +1,7 @@
+extensions = ["kt", "kts"]
+aliases = ["kt"]
+
+[source]
+repo = "https://github.com/fwcd/tree-sitter-kotlin"
+rev = "1852ea17b7f60fb3f9d84e0b1555d56b46b39fb1"
+license = "MIT"

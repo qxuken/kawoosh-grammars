@@ -1,0 +1,125 @@
+# kawoosh-grammars
+
+Tree-sitter grammars for kawoosh, built ahead: the list of them, the
+queries they are read with, and the builder that turns each into one
+file an editor can fetch and load without a compiler.
+
+A release is a folder of
+
+- `manifest.json` — every grammar: the files that are its language
+  (`extensions`, `filenames`, `shebangs`, `aliases`), where it came from
+  (`repo`, `rev`, `path`, `license`), its `abi` and `symbol`, and its
+  archive's name, `size` and `blake3`;
+- `NAME.sqlar` — one archive a grammar.
+
+## An archive
+
+A [sqlite archive](https://sqlite.org/sqlar.html): the table
+`sqlar(name, mode, mtime, sz, data)`, a blob deflated with zlib when
+that is smaller, and a table `meta(key, value)` saying what it was
+built from.
+
+```
+lib/x86_64-windows.dll    lib/aarch64-windows.dll
+lib/x86_64-linux.so       lib/aarch64-linux.so      (glibc 2.17 and later)
+lib/x86_64-macos.dylib    lib/aarch64-macos.dylib
+queries/highlights.scm    queries/injections.scm    queries/tags.scm    queries/indents.scm
+LICENSE
+```
+
+Each library exports `tree_sitter_NAME` (the manifest's `symbol`), as
+`tree-sitter build` would make it. The queries are whole: what a
+grammar inherits is already in front of its own. `sqlite3` reads one:
+
+```bash
+sqlite3 zig.sqlar -At
+```
+
+```bash
+sqlite3 zig.sqlar -Ax lib/x86_64-linux.so queries/highlights.scm
+```
+
+## A grammar
+
+```
+grammars/
+  zig/
+    grammar.toml
+    sample.zig        # parsed by the check: no ERROR node
+    queries/          # only what replaces or adds to the grammar's own
+      indents.scm
+```
+
+```toml
+# grammars/zig/grammar.toml — the directory's name is the language's
+extensions = ["zig", "zon"]   # lowercase, without the dot
+filenames = []                # whole file names: "Dockerfile"
+shebangs = []                 # interpreters of a `#!` line: "ruby"
+aliases = []                  # other spellings: "rb"
+# symbol = "tree_sitter_zig"  # when it is not tree_sitter_NAME
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-zig"
+rev = "6479aa13f32f701c383083d8b28360ebd682fb7d"   # a whole commit
+# path = "."                  # where src/parser.c is: "tsx" in typescript's repository
+license = "MIT"               # SPDX; the text is copied from the checkout
+
+# [queries]
+# inherits = ["javascript"]   # grammars here whose queries go in front
+```
+
+Queries: `highlights.scm`, `injections.scm` and `tags.scm` are taken
+from the grammar's own `queries/` at the revision; a file in this
+repository's `queries/` replaces the one of its name. `indents.scm` is
+only ever this repository's: kawoosh reads helix's dialect, and a
+grammar's repository carries nvim's.
+
+To add one: the directory, the `grammar.toml`, a `sample.*` that uses
+the language broadly, and `cargo run -- build NAME`. To move one: a new
+`rev`, and the same.
+
+A grammar is refused when its checkout has no `src/parser.c` (it
+commits no generated parser) or its scanner is C++.
+
+## Building
+
+Needs git, a Rust toolchain, and zig at the version in `.zig-version`
+(`$ZIG` names another command, `python3 -m ziglang` for one).
+
+```bash
+cargo run --release -- build
+```
+
+writes `dist/`. For each grammar the builder
+
+1. fetches the source at `rev` into `work/src` (one commit, kept);
+2. builds the six libraries with `zig cc`;
+3. makes the queries whole;
+4. checks, with this machine's library: the symbol is there, the ABI
+   is one tree-sitter 0.27 reads (13 to 15), every query compiles
+   against the grammar, the sample parses with no ERROR or MISSING
+   node;
+5. writes the archive, reads this machine's library back out of it,
+   and adds the manifest's row.
+
+One grammar failing fails the build and writes no manifest.
+`cargo run -- build zig ruby` builds those alone; `cargo run -- list`
+says what is here.
+
+The same sources and the same zig give the same bytes on one machine.
+Two machines are not promised to agree, so a host that builds its own
+release serves its own manifest: take a manifest and the archives it
+names from the same place.
+
+## Releases
+
+A tag `rN` on main builds and publishes on both hosts:
+
+- `https://drydock9.qxuken.dev/qxuken/kawoosh-grammars/releases/download/latest/`
+- `https://github.com/qxuken/kawoosh-grammars/releases/latest/download/`
+
+## Licence
+
+The builder and what is written here are MIT (`LICENSE`). Each grammar
+is under its own licence, named in its `grammar.toml` and carried in
+its archive.

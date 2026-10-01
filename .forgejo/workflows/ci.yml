@@ -1,0 +1,93 @@
+# Forgejo Actions, on drydock9. Every push to main and every pull request
+# builds every grammar for every target and checks each (`build` fails on
+# the first grammar whose queries or sample do not hold); a tag `rN`
+# publishes what was built as that release.
+#
+# This host's release is its own: GitHub builds the same tag from the
+# mirror, and two machines are not promised the same bytes. Each serves a
+# manifest beside the archives it names.
+#
+# The container is the stock node image, as kui's jobs are: checkout, cache
+# and the artifact actions are JavaScript and the runner execs `node` inside
+# the job container. Rust comes from rustup; zig as a pip wheel, at the
+# version `.zig-version` pins, which is what the builder insists on. The
+# artifact action is v3: Forgejo's backend speaks that API.
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['r*']
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_HOME: /usr/local/cargo
+  RUSTUP_HOME: /usr/local/rustup
+  ZIG: python3 -m ziglang
+
+jobs:
+  build:
+    runs-on: docker
+    container:
+      image: node:24-bookworm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          set -eu
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl git python3-pip zstd
+          curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal \
+            --default-toolchain stable
+          echo "${CARGO_HOME}/bin" >> "$GITHUB_PATH"
+          pip3 install --break-system-packages "ziglang==$(cat .zig-version)"
+          $ZIG version
+
+      # `work/src` is the grammars' checkouts, each at its revision: a hit
+      # fetches only what moved.
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/cargo/registry/index
+            /usr/local/cargo/registry/cache
+            target
+            work/src
+          key: build-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('grammars/*/grammar.toml') }}
+          restore-keys: |
+            build-${{ hashFiles('Cargo.lock') }}-
+            build-
+
+      - name: Test the builder
+        run: cargo test --release
+
+      - name: Build and check every grammar
+        run: cargo run --release -- build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: grammars
+          path: dist
+
+      # The release, and each file of `dist` as one of its attachments. The
+      # run's own token writes to its repository; nothing here is a package.
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/r')
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          api="${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}"
+          count=$(python3 -c 'import json; print(len(json.load(open("dist/manifest.json"))["grammars"]))')
+          body=$(python3 -c 'import json, sys; print(json.dumps({"tag_name": sys.argv[1], "name": sys.argv[1], "body": sys.argv[2] + " grammars, six targets each."}))' \
+            "$GITHUB_REF_NAME" "$count")
+          id=$(curl -fsS -X POST "$api/releases" \
+            -H "Authorization: token ${TOKEN}" -H 'Content-Type: application/json' \
+            -d "$body" | python3 -c 'import json, sys; print(json.load(sys.stdin)["id"])')
+          for file in dist/*; do
+            curl -fsS -X POST "$api/releases/${id}/assets?name=$(basename "$file")" \
+              -H "Authorization: token ${TOKEN}" -F "attachment=@${file}" > /dev/null
+            echo "attached $(basename "$file")"
+          done

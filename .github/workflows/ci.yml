@@ -1,0 +1,71 @@
+# GitHub Actions, on the mirror. The same as .forgejo/workflows/ci.yml on
+# drydock9: every push to main and every pull request builds and checks
+# every grammar; a tag `rN` publishes what was built as that release.
+#
+# This host's release is its own. drydock9 builds the same tag, and two
+# machines are not promised the same bytes: each serves a manifest beside
+# the archives it names.
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['r*']
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  ZIG: python3 -m ziglang
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # zig as a pip wheel, at the version `.zig-version` pins, which is
+      # what the builder insists on.
+      - name: Install zig
+        run: |
+          set -eu
+          pip3 install --break-system-packages "ziglang==$(cat .zig-version)"
+          $ZIG version
+
+      # `work/src` is the grammars' checkouts, each at its revision: a hit
+      # fetches only what moved.
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            target
+            work/src
+          key: build-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('grammars/*/grammar.toml') }}
+          restore-keys: |
+            build-${{ hashFiles('Cargo.lock') }}-
+            build-
+
+      - name: Test the builder
+        run: cargo test --release
+
+      - name: Build and check every grammar
+        run: cargo run --release -- build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: grammars
+          path: dist
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/r')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          count=$(python3 -c 'import json; print(len(json.load(open("dist/manifest.json"))["grammars"]))')
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" --notes "${count} grammars, six targets each."

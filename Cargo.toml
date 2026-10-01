@@ -1,0 +1,23 @@
+[package]
+name = "kawoosh-grammars"
+version = "0.1.0"
+edition = "2024"
+authors = ["Nasonov Viktor <me@qxuken.dev>"]
+description = "Tree-sitter grammars for kawoosh, built ahead: the list, the queries, the builder"
+license = "MIT"
+publish = false
+
+[dependencies]
+blake3 = "1"
+# sqlite's archive table deflates its blobs with zlib.
+flate2 = "1"
+# The check loads the host's library as kawoosh will.
+libloading = "0.9"
+rusqlite = { version = "0.40", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "1"
+# The tree-sitter kawoosh reads grammars with: its ABI range is the
+# check's.
+tree-sitter = "0.27"
+tree-sitter-language = "0.1"
