@@ -97,8 +97,9 @@ writes `dist/`. For each grammar the builder
 3. makes the queries whole;
 4. checks, with this machine's library: the symbol is there, the ABI
    is one tree-sitter 0.27 reads (13 to 15), every query compiles
-   against the grammar, the sample parses with no ERROR or MISSING
-   node;
+   against the grammar and has the capture its kind is read by
+   (`@injection.content` in `injections.scm`, `@name` in `tags.scm`),
+   the sample parses with no ERROR or MISSING node;
 5. writes the archive, reads this machine's library back out of it,
    and adds the manifest's row.
 

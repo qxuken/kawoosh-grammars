@@ -1,7 +1,8 @@
 //! What a grammar must pass to be released, tried with this machine's
 //! library as kawoosh will load it: the symbol is there, the ABI is one
 //! kawoosh's tree-sitter reads, every query compiles against the
-//! grammar, and the sample parses with no error. A revision moved past
+//! grammar and has the capture its kind is read by, and the sample
+//! parses with no error. A revision moved past
 //! its queries fails here, not in an editor.
 
 use std::path::Path;
@@ -43,7 +44,7 @@ pub fn check(lib: &Path, symbol: &str, queries: &Set, sample: &Path) -> Result<u
         return Err("no highlights.scm, in the checkout or here".into());
     }
     for (file, text) in queries {
-        tree_sitter::Query::new(&language, text).map_err(|e| {
+        let query = tree_sitter::Query::new(&language, text).map_err(|e| {
             let what = match e.kind {
                 tree_sitter::QueryErrorKind::NodeType => "the grammar has no node",
                 tree_sitter::QueryErrorKind::Field => "the grammar has no field",
@@ -57,6 +58,21 @@ pub fn check(lib: &Path, symbol: &str, queries: &Set, sample: &Path) -> Result<u
                 e.message
             )
         })?;
+        // The capture a reader finds the file's point by: tree-sitter's
+        // own convention for each, and what kawoosh refuses a file
+        // without.
+        let needs = match file.as_str() {
+            "injections.scm" => Some("injection.content"),
+            "tags.scm" | "outline.scm" => Some("name"),
+            _ => None,
+        };
+        if let Some(capture) = needs
+            && !query.capture_names().contains(&capture)
+        {
+            return Err(format!(
+                "{file}: no @{capture} capture; replace it with one that has, in queries/"
+            ));
+        }
     }
     let text = std::fs::read_to_string(sample).map_err(|e| format!("{}: {e}", sample.display()))?;
     let mut parser = tree_sitter::Parser::new();
