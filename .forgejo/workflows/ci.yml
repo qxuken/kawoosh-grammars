@@ -71,8 +71,12 @@ jobs:
           name: grammars
           path: dist
 
-      # The release, and each file of `dist` as one of its attachments. The
-      # run's own token writes to its repository; nothing here is a package.
+      # The release, and each file of `dist` as one of its attachments. It
+      # is a draft until the last of them is on: `releases/download/latest`
+      # is what an editor fetches from, and a release published first and
+      # filled after is, for the minutes that takes, the latest one with no
+      # manifest in it (r3 was). The run's own token writes to its
+      # repository; nothing here is a package.
       - name: Publish the release
         if: startsWith(github.ref, 'refs/tags/r')
         env:
@@ -81,7 +85,7 @@ jobs:
           set -eu
           api="${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}"
           count=$(python3 -c 'import json; print(len(json.load(open("dist/manifest.json"))["grammars"]))')
-          body=$(python3 -c 'import json, sys; print(json.dumps({"tag_name": sys.argv[1], "name": sys.argv[1], "body": sys.argv[2] + " grammars, six targets each."}))' \
+          body=$(python3 -c 'import json, sys; print(json.dumps({"tag_name": sys.argv[1], "name": sys.argv[1], "draft": True, "body": sys.argv[2] + " grammars, six targets each."}))' \
             "$GITHUB_REF_NAME" "$count")
           id=$(curl -fsS -X POST "$api/releases" \
             -H "Authorization: token ${TOKEN}" -H 'Content-Type: application/json' \
@@ -91,3 +95,7 @@ jobs:
               -H "Authorization: token ${TOKEN}" -F "attachment=@${file}" > /dev/null
             echo "attached $(basename "$file")"
           done
+          curl -fsS -X PATCH "$api/releases/${id}" \
+            -H "Authorization: token ${TOKEN}" -H 'Content-Type: application/json' \
+            -d '{"draft": false}' > /dev/null
+          echo "published ${GITHUB_REF_NAME}"
