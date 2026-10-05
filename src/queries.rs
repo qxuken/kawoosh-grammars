@@ -19,7 +19,9 @@ pub type Set = BTreeMap<String, String>;
 const UPSTREAM: [&str; 3] = ["highlights.scm", "injections.scm", "tags.scm"];
 
 /// A grammar's queries before inheritance: the checkout's (beside the
-/// grammar, else at the root), then every `.scm` of the repository's
+/// grammar, else under the root's `queries/` in a directory of the
+/// grammar's path — xml's are in `queries/xml` — else at the root),
+/// then every `.scm` of the repository's
 /// `queries/` — which replaces the checkout's of that name, or, saying
 /// `; extends` in the comments at its top, goes after it: a reader
 /// gives a node two patterns match to the later, so a few patterns
@@ -28,6 +30,7 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
     let mut set = Set::new();
     let dirs = [
         checkout.join(&spec.source.path).join("queries"),
+        checkout.join("queries").join(&spec.source.path),
         checkout.join("queries"),
     ];
     if let Some(dir) = dirs.iter().find(|d| d.is_dir()) {
@@ -240,6 +243,19 @@ mod tests {
         let mut s = spec("tsx", &t.join("grammars/tsx"), &[]);
         s.source.path = "tsx".into();
         assert_eq!(own(&checkout, &s).unwrap()["highlights.scm"], "tsx's");
+        std::fs::remove_dir_all(t).unwrap();
+    }
+
+    #[test]
+    fn a_grammar_in_a_subdirectory_may_keep_its_queries_under_the_root_s() {
+        let t = temp("under");
+        let checkout = t.join("checkout");
+        put(&checkout.join("xml/src/parser.c"), "");
+        put(&checkout.join("queries/xml/highlights.scm"), "xml's");
+        put(&checkout.join("queries/dtd/highlights.scm"), "dtd's");
+        let mut s = spec("xml", &t.join("grammars/xml"), &[]);
+        s.source.path = "xml".into();
+        assert_eq!(own(&checkout, &s).unwrap()["highlights.scm"], "xml's");
         std::fs::remove_dir_all(t).unwrap();
     }
 

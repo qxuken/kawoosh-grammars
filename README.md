@@ -70,7 +70,9 @@ license = "MIT"               # SPDX; the text is copied from the checkout
 ```
 
 Queries: `highlights.scm`, `injections.scm` and `tags.scm` are taken
-from the grammar's own `queries/` at the revision. A file in this
+from the grammar's own `queries/` at the revision — beside the
+grammar, or under the root's in a directory of the grammar's `path`
+(xml's are in `queries/xml`), or at the root. A file in this
 repository's `queries/` replaces the one of its name — or goes after
 it, when the comments it opens with say `; extends`: a reader gives a
 node two patterns match to the later one, so a few patterns added

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/css" href="sample.css"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+  <!ENTITY brand "#3a7bd5">
+  <!ELEMENT note (#PCDATA)>
+  <!ATTLIST note kind CDATA #IMPLIED>
+]>
+<!-- A picture, which is where most of the XML an editor opens is. -->
+<svg xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 120 80" width="120" height="80">
+  <title>A sample &amp; its entities: &brand; &#169; &#xA9;</title>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9cf"/>
+      <stop offset="1" stop-color='white'/>
+    </linearGradient>
+    <style>
+      .hill { fill: #4a7; stroke: none; }
+    </style>
+  </defs>
+  <rect width="120" height="80" fill="url(#sky)"/>
+  <g class="hill" transform="translate(0 40)">
+    <path d="M0 40 Q30 0 60 40 T120 40 Z"/>
+    <circle cx="96" cy="-20" r="8" fill="gold"></circle>
+  </g>
+  <a xlink:href="#sky">
+    <text x="8" y="16" font-size="8">Hello</text>
+  </a>
+  <note kind="aside"><![CDATA[1 < 2 && "raw" </note>]]></note>
+  <script>
+    document.title = "sample";
+  </script>
+</svg>
+<!-- The end. -->
