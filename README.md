@@ -57,6 +57,8 @@ filenames = []                # whole file names: "Dockerfile"
 shebangs = []                 # interpreters of a `#!` line: "ruby"
 aliases = []                  # other spellings: "rb"
 # symbol = "tree_sitter_zig"  # when it is not tree_sitter_NAME
+comment = "//"                # the line comment token, without its space
+# comment_block = ["/*", "*/"]  # the block pair; either left out where there is none
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-zig"

@@ -1,5 +1,6 @@
 extensions = ["pl", "pm"]
 shebangs = ["perl"]
+comment = "#"
 
 [source]
 repo = "https://github.com/tree-sitter-perl/tree-sitter-perl"

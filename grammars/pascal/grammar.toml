@@ -1,4 +1,6 @@
 extensions = ["pas", "pp"]
+comment = "//"
+comment_block = ["{", "}"]
 
 [source]
 repo = "https://github.com/Isopod/tree-sitter-pascal"

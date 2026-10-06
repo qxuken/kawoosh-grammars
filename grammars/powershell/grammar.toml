@@ -1,6 +1,8 @@
 extensions = ["ps1", "psm1", "psd1"]
 shebangs = ["pwsh"]
 aliases = ["pwsh"]
+comment = "#"
+comment_block = ["<#", "#>"]
 
 [source]
 repo = "https://github.com/airbus-cert/tree-sitter-powershell"

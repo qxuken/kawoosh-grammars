@@ -1,5 +1,6 @@
 extensions = ["ex", "exs"]
 shebangs = ["elixir"]
+comment = "#"
 
 [source]
 repo = "https://github.com/elixir-lang/tree-sitter-elixir"

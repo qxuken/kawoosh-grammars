@@ -1,5 +1,6 @@
 extensions = ["bib"]
 aliases = ["bib"]
+comment = "%"
 
 [source]
 repo = "https://github.com/latex-lsp/tree-sitter-bibtex"

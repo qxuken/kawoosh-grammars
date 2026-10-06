@@ -1,4 +1,5 @@
 extensions = ["http"]
+comment = "#"
 
 [source]
 repo = "https://github.com/rest-nvim/tree-sitter-http"

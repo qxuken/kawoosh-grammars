@@ -1,5 +1,7 @@
 extensions = ["hs"]
 aliases = ["hs"]
+comment = "--"
+comment_block = ["{-", "-}"]
 
 [source]
 repo = "https://github.com/tree-sitter/tree-sitter-haskell"

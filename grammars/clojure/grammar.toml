@@ -1,5 +1,6 @@
 extensions = ["clj", "cljs", "cljc", "edn"]
 aliases = ["clj"]
+comment = ";"
 
 [source]
 repo = "https://github.com/sogaiu/tree-sitter-clojure"

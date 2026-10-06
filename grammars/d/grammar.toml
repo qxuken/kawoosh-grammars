@@ -1,5 +1,7 @@
 extensions = ["d"]
 aliases = ["dlang"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/gdamore/tree-sitter-d"

@@ -1,4 +1,5 @@
 filenames = ["git-rebase-todo"]
+comment = "#"
 
 [source]
 repo = "https://github.com/the-mikedavis/tree-sitter-git-rebase"

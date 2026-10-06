@@ -1,4 +1,6 @@
 extensions = ["json5"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/Joakker/tree-sitter-json5"

@@ -1,6 +1,7 @@
 extensions = ["star", "bzl"]
 filenames = ["BUILD", "BUILD.bazel", "WORKSPACE", "WORKSPACE.bazel"]
 aliases = ["bazel"]
+comment = "#"
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-starlark"

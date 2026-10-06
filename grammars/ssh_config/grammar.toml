@@ -1,4 +1,5 @@
 filenames = ["ssh_config", "sshd_config"]
+comment = "#"
 
 [source]
 repo = "https://github.com/ObserverOfTime/tree-sitter-ssh-config"

@@ -1,4 +1,5 @@
 filenames = [".gitattributes"]
+comment = "#"
 
 [source]
 repo = "https://github.com/ObserverOfTime/tree-sitter-gitattributes"

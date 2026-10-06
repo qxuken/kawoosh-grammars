@@ -1,5 +1,6 @@
 extensions = ["el"]
 aliases = ["emacs-lisp"]
+comment = ";"
 
 [source]
 repo = "https://github.com/Wilfred/tree-sitter-elisp"

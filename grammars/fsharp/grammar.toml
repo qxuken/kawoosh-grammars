@@ -1,4 +1,6 @@
 extensions = ["fs", "fsx"]
+comment = "//"
+comment_block = ["(*", "*)"]
 
 [source]
 repo = "https://github.com/ionide/tree-sitter-fsharp"

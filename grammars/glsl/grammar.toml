@@ -1,4 +1,6 @@
 extensions = ["glsl", "vert", "frag", "geom", "comp"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/theHamsta/tree-sitter-glsl"

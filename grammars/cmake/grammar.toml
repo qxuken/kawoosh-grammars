@@ -1,5 +1,7 @@
 extensions = ["cmake"]
 filenames = ["CMakeLists.txt"]
+comment = "#"
+comment_block = ["#[[", "]]"]
 
 [source]
 repo = "https://github.com/uyha/tree-sitter-cmake"

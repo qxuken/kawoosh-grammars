@@ -1,4 +1,6 @@
 extensions = ["nix"]
+comment = "#"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/nix-community/tree-sitter-nix"

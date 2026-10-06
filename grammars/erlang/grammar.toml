@@ -1,6 +1,7 @@
 extensions = ["erl", "hrl"]
 shebangs = ["escript"]
 aliases = ["erl"]
+comment = "%"
 
 [source]
 repo = "https://github.com/WhatsApp/tree-sitter-erlang"

@@ -1,5 +1,6 @@
 extensions = ["awk"]
 shebangs = ["awk", "gawk"]
+comment = "#"
 
 [source]
 repo = "https://github.com/Beaglefoot/tree-sitter-awk"

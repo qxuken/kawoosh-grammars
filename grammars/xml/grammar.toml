@@ -1,4 +1,5 @@
 extensions = ["xml", "svg", "xsd", "xsl", "xslt", "rng", "plist", "xaml", "csproj", "fsproj", "vbproj", "props", "targets", "nuspec", "resx", "rss", "atom", "gpx", "kml", "xlf", "xliff", "wsdl", "glade", "ui", "qrc", "sgml", "storyboard", "xib", "entitlements", "drawio", "dae", "urdf"]
+comment_block = ["<!--", "-->"]
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-xml"

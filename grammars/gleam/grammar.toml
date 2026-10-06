@@ -1,4 +1,5 @@
 extensions = ["gleam"]
+comment = "//"
 
 [source]
 repo = "https://github.com/gleam-lang/tree-sitter-gleam"

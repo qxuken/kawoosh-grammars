@@ -1,4 +1,5 @@
 extensions = ["ninja"]
+comment = "#"
 
 [source]
 repo = "https://github.com/alemuller/tree-sitter-ninja"

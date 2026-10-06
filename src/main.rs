@@ -46,6 +46,12 @@ struct Row {
     filenames: Vec<String>,
     shebangs: Vec<String>,
     aliases: Vec<String>,
+    /// The comment tokens, as `grammar.toml` says them; left out where
+    /// the language has none.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    comment: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    comment_block: Option<Vec<String>>,
     repo: String,
     rev: String,
     path: String,
@@ -319,6 +325,8 @@ fn one(
         filenames: spec.filenames.clone(),
         shebangs: spec.shebangs.clone(),
         aliases: spec.aliases.clone(),
+        comment: spec.comment.clone(),
+        comment_block: spec.comment_block.clone(),
         repo: spec.source.repo.clone(),
         rev: spec.source.rev.clone(),
         path: spec.source.path.clone(),

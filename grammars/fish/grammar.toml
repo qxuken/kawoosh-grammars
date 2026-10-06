@@ -1,5 +1,6 @@
 extensions = ["fish"]
 shebangs = ["fish"]
+comment = "#"
 
 [source]
 repo = "https://github.com/ram02z/tree-sitter-fish"

@@ -1,4 +1,6 @@
 extensions = ["scala", "sc", "sbt"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/tree-sitter/tree-sitter-scala"

@@ -1,5 +1,7 @@
 extensions = ["kt", "kts"]
 aliases = ["kt"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/fwcd/tree-sitter-kotlin"

@@ -1,6 +1,7 @@
 extensions = ["dockerfile"]
 filenames = ["Dockerfile", "Containerfile"]
 aliases = ["docker"]
+comment = "#"
 
 [source]
 repo = "https://github.com/camdencheek/tree-sitter-dockerfile"

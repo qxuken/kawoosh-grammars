@@ -1,6 +1,8 @@
 # This grammar reads no map (`$m: (key: value)`) and no `%placeholder`:
 # a file with one parses with an ERROR there, and is painted around it.
 extensions = ["scss"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-scss"

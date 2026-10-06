@@ -2,6 +2,7 @@ extensions = ["rb", "rake", "gemspec"]
 filenames = ["Gemfile", "Rakefile"]
 shebangs = ["ruby"]
 aliases = ["rb"]
+comment = "#"
 
 [source]
 repo = "https://github.com/tree-sitter/tree-sitter-ruby"

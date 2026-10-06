@@ -22,6 +22,11 @@ struct File {
     aliases: Vec<String>,
     /// The library's symbol, when it is not `tree_sitter_NAME`.
     symbol: Option<String>,
+    /// The line comment token, without its trailing space (`//`),
+    /// and the block pair (`["/*", "*/"]`): what kawoosh's `gc`
+    /// writes. Either absent where the language has none.
+    comment: Option<String>,
+    comment_block: Option<Vec<String>>,
     source: Source,
     #[serde(default)]
     queries: Queries,
@@ -68,6 +73,8 @@ pub struct Spec {
     pub shebangs: Vec<String>,
     pub aliases: Vec<String>,
     pub symbol: String,
+    pub comment: Option<String>,
+    pub comment_block: Option<Vec<String>>,
     pub source: Source,
     pub inherits: Vec<String>,
     pub skip: Vec<String>,
@@ -86,6 +93,8 @@ impl Spec {
             symbol: f
                 .symbol
                 .unwrap_or_else(|| format!("tree_sitter_{}", name.replace('-', "_"))),
+            comment: f.comment,
+            comment_block: f.comment_block,
             source: f.source,
             inherits: f.queries.inherits,
             skip: f.queries.skip,
@@ -119,6 +128,25 @@ impl Spec {
         }
         if s.license.trim().is_empty() {
             return Err("license is empty".into());
+        }
+        let token = |t: &str, what: &str| {
+            if t.is_empty() || t.chars().any(char::is_whitespace) {
+                return Err(format!("{what} `{t}`: a token without spaces"));
+            }
+            Ok(())
+        };
+        if let Some(c) = &self.comment {
+            token(c, "comment")?;
+        }
+        if let Some(b) = &self.comment_block {
+            let [open, close] = b.as_slice() else {
+                return Err(format!(
+                    "comment_block has {} entries: the opener and the closer",
+                    b.len()
+                ));
+            };
+            token(open, "comment_block's opener")?;
+            token(close, "comment_block's closer")?;
         }
         for e in &self.extensions {
             if e.starts_with('.') || *e != e.to_ascii_lowercase() {

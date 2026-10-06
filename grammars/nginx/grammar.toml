@@ -1,5 +1,6 @@
 extensions = ["nginx"]
 filenames = ["nginx.conf"]
+comment = "#"
 
 [source]
 repo = "https://github.com/opa-oz/tree-sitter-nginx"

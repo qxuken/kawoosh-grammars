@@ -1,4 +1,5 @@
 extensions = ["properties"]
+comment = "#"
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-properties"

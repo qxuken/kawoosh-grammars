@@ -1,4 +1,5 @@
 extensions = ["html", "htm", "xhtml"]
+comment_block = ["<!--", "-->"]
 
 [source]
 repo = "https://github.com/tree-sitter/tree-sitter-html"

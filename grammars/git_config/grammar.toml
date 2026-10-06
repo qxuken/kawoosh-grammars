@@ -1,5 +1,6 @@
 filenames = [".gitconfig", ".gitmodules"]
 aliases = ["gitconfig"]
+comment = "#"
 
 [source]
 repo = "https://github.com/the-mikedavis/tree-sitter-git-config"

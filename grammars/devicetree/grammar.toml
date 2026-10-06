@@ -1,4 +1,6 @@
 extensions = ["dts", "dtsi"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/joelspadin/tree-sitter-devicetree"

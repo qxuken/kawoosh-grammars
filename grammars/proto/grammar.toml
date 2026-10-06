@@ -1,5 +1,7 @@
 extensions = ["proto"]
 aliases = ["protobuf"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/coder3101/tree-sitter-proto"

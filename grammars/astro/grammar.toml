@@ -1,4 +1,5 @@
 extensions = ["astro"]
+comment_block = ["<!--", "-->"]
 
 [source]
 repo = "https://github.com/virchau13/tree-sitter-astro"

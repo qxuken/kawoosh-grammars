@@ -1,5 +1,6 @@
 extensions = ["erb"]
 symbol = "tree_sitter_embedded_template"
+comment_block = ["<%#", "%>"]
 
 [source]
 repo = "https://github.com/tree-sitter/tree-sitter-embedded-template"

@@ -1,4 +1,6 @@
 extensions = ["dart"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/UserNobody14/tree-sitter-dart"

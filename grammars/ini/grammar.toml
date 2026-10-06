@@ -1,4 +1,5 @@
 extensions = ["ini", "cfg"]
+comment = ";"
 
 [source]
 repo = "https://github.com/justinmk/tree-sitter-ini"

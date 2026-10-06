@@ -1,5 +1,7 @@
 extensions = ["m"]
 aliases = ["objective-c"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-objc"

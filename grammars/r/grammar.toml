@@ -1,5 +1,6 @@
 extensions = ["r"]
 shebangs = ["Rscript"]
+comment = "#"
 
 [source]
 repo = "https://github.com/r-lib/tree-sitter-r"

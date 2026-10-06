@@ -1,4 +1,6 @@
 extensions = ["luau"]
+comment = "--"
+comment_block = ["--[[", "]]"]
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-luau"

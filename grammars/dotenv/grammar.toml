@@ -1,5 +1,6 @@
 extensions = ["env"]
 filenames = [".env", ".env.local", ".env.example"]
+comment = "#"
 
 [source]
 repo = "https://github.com/pnx/tree-sitter-dotenv"

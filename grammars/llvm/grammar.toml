@@ -1,4 +1,5 @@
 extensions = ["ll"]
+comment = ";"
 
 [source]
 repo = "https://github.com/benwilliamgraham/tree-sitter-llvm"

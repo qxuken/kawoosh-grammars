@@ -1,4 +1,5 @@
 filenames = ["requirements.txt"]
+comment = "#"
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-requirements"

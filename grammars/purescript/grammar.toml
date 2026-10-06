@@ -1,4 +1,6 @@
 extensions = ["purs"]
+comment = "--"
+comment_block = ["{-", "-}"]
 
 [source]
 repo = "https://github.com/postsolar/tree-sitter-purescript"

@@ -1,6 +1,8 @@
 # This grammar predates module-scope `const` (it reads `let` there): a
 # current shader parses with an ERROR at each, and is painted around it.
 extensions = ["wgsl"]
+comment = "//"
+comment_block = ["/*", "*/"]
 
 [source]
 repo = "https://github.com/szebniok/tree-sitter-wgsl"

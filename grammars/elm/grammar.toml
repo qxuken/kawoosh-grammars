@@ -1,4 +1,6 @@
 extensions = ["elm"]
+comment = "--"
+comment_block = ["{-", "-}"]
 
 [source]
 repo = "https://github.com/razzeee/tree-sitter-elm"

@@ -1,6 +1,7 @@
 extensions = ["mk", "mak"]
 filenames = ["Makefile", "makefile", "GNUmakefile"]
 aliases = ["makefile"]
+comment = "#"
 
 [source]
 repo = "https://github.com/alemuller/tree-sitter-make"
