@@ -1,0 +1,41 @@
+package views
+
+import "fmt"
+
+// Item is one row of the list.
+type Item struct {
+	ID   int
+	Name string
+}
+
+css card() {
+	padding: 1rem;
+	border: 1px solid #ccc;
+}
+
+script greet(name string) {
+	console.log("hello", name);
+}
+
+templ Page(title string, items []Item) {
+	<html>
+		<head><title>{ title }</title></head>
+		<body class={ card() } onload={ greet(title) }>
+			<h1>{ title }</h1>
+			if len(items) == 0 {
+				<p>Nothing yet.</p>
+			} else {
+				<ul>
+					for _, item := range items {
+						<li id={ fmt.Sprint(item.ID) }>{ item.Name }</li>
+					}
+				</ul>
+			}
+			@Footer(len(items))
+		</body>
+	</html>
+}
+
+templ Footer(n int) {
+	<footer>{ fmt.Sprintf("%d items", n) }</footer>
+}

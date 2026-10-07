@@ -1,0 +1,14 @@
+# templ: Go with html components (`templ Name() { <div>…</div> }`), css
+# and script blocks. The grammar extends tree-sitter-go 0.25, and its
+# queries say `; inherits: go`, a grammar kawoosh builds in rather than
+# one of this repository's: so `queries/` holds them whole — go's
+# highlights and tags in front of templ's — each file saying where its
+# parts are from.
+extensions = ["templ"]
+comment = "//"
+comment_block = ["/*", "*/"]
+
+[source]
+repo = "https://github.com/vrischmann/tree-sitter-templ"
+rev = "2c0a72e907d2a95a7b6dd29703e38c95818e956a"
+license = "MIT"
