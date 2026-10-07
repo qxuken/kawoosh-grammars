@@ -1,0 +1,13 @@
+# Vue single-file components: the template's html, `{{ }}` and a
+# directive's value read as typescript, a `<script>` by its `lang`
+# (javascript unless it says ts, tsx or jsx), a `<style>` as css or scss.
+# The queries are the repository's own, nvim's layout (`queries/vue`,
+# with `html_tags` in front of them). Its `#lua-match?` predicates are
+# not read by kawoosh: the patterns they guard match regardless.
+extensions = ["vue"]
+comment_block = ["<!--", "-->"]
+
+[source]
+repo = "https://github.com/tree-sitter-grammars/tree-sitter-vue"
+rev = "ce8011a414fdf8091f4e4071752efc376f4afb08"
+license = "MIT"
