@@ -1,6 +1,8 @@
 extensions = ["odin"]
 comment = "//"
 comment_block = ["/*", "*/"]
+indent_style = "tab"
+indent_size = 4
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-odin"

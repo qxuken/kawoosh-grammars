@@ -52,6 +52,12 @@ struct Row {
     comment: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     comment_block: Option<Vec<String>>,
+    /// How its files indent, likewise: `"tab"` or `"space"`, and the
+    /// width.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    indent_style: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    indent_size: Option<u32>,
     repo: String,
     rev: String,
     path: String,
@@ -327,6 +333,8 @@ fn one(
         aliases: spec.aliases.clone(),
         comment: spec.comment.clone(),
         comment_block: spec.comment_block.clone(),
+        indent_style: spec.indent_style.clone(),
+        indent_size: spec.indent_size,
         repo: spec.source.repo.clone(),
         rev: spec.source.rev.clone(),
         path: spec.source.path.clone(),

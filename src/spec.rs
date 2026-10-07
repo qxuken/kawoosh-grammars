@@ -27,6 +27,11 @@ struct File {
     /// writes. Either absent where the language has none.
     comment: Option<String>,
     comment_block: Option<Vec<String>>,
+    /// How its files indent where the language's own tools insist,
+    /// in `.editorconfig`'s words: `"tab"` or `"space"`, and the
+    /// width. Make's recipes start with a tab or are not recipes.
+    indent_style: Option<String>,
+    indent_size: Option<u32>,
     source: Source,
     #[serde(default)]
     queries: Queries,
@@ -75,6 +80,8 @@ pub struct Spec {
     pub symbol: String,
     pub comment: Option<String>,
     pub comment_block: Option<Vec<String>>,
+    pub indent_style: Option<String>,
+    pub indent_size: Option<u32>,
     pub source: Source,
     pub inherits: Vec<String>,
     pub skip: Vec<String>,
@@ -95,6 +102,8 @@ impl Spec {
                 .unwrap_or_else(|| format!("tree_sitter_{}", name.replace('-', "_"))),
             comment: f.comment,
             comment_block: f.comment_block,
+            indent_style: f.indent_style,
+            indent_size: f.indent_size,
             source: f.source,
             inherits: f.queries.inherits,
             skip: f.queries.skip,
@@ -147,6 +156,17 @@ impl Spec {
             };
             token(open, "comment_block's opener")?;
             token(close, "comment_block's closer")?;
+        }
+        if let Some(s) = &self.indent_style
+            && s != "tab"
+            && s != "space"
+        {
+            return Err(format!("indent_style `{s}`: \"tab\" or \"space\""));
+        }
+        if let Some(n) = self.indent_size
+            && !(1..=16).contains(&n)
+        {
+            return Err(format!("indent_size {n}: a width from 1 to 16"));
         }
         for e in &self.extensions {
             if e.starts_with('.') || *e != e.to_ascii_lowercase() {
@@ -263,6 +283,12 @@ mod tests {
         assert_eq!(s.symbol, "tree_sitter_zig");
         assert_eq!(s.source.path, ".");
         assert!(s.inherits.is_empty() && s.filenames.is_empty());
+        assert_eq!((s.indent_style, s.indent_size), (None, None));
+        let s = parse("make", &toml("indent_style = \"tab\"\nindent_size = 4", "")).unwrap();
+        assert_eq!(
+            (s.indent_style.as_deref(), s.indent_size),
+            (Some("tab"), Some(4))
+        );
         let s = parse(
             "c-sharp",
             &toml("symbol = \"tree_sitter_c_sharp\"", "path = \"x\""),
@@ -289,6 +315,8 @@ mod tests {
             err("zig", &toml("", "").replace("\"zig\"", "\".zig\"")).contains("without the dot")
         );
         assert!(err("zig", &toml("", "").replace("[\"zig\"]", "[]")).contains("no file is this"));
+        assert!(err("zig", &toml("indent_style = \"tabs\"", "")).contains("\"tab\" or"));
+        assert!(err("zig", &toml("indent_size = 0", "")).contains("from 1 to 16"));
         // A word the file does not have is a typo, not an extension.
         assert!(err("zig", &toml("extentions = []", "")).contains("unknown field"));
     }

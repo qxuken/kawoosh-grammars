@@ -59,6 +59,8 @@ aliases = []                  # other spellings: "rb"
 # symbol = "tree_sitter_zig"  # when it is not tree_sitter_NAME
 comment = "//"                # the line comment token, without its space
 # comment_block = ["/*", "*/"]  # the block pair; either left out where there is none
+# indent_style = "tab"        # "tab" or "space", where the language's tools insist:
+# indent_size = 4             # make's recipes, gofmt's; left out, the editor's own
 
 [source]
 repo = "https://github.com/tree-sitter-grammars/tree-sitter-zig"
