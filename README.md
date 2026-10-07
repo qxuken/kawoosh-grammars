@@ -74,7 +74,11 @@ license = "MIT"               # SPDX; the text is copied from the checkout
 Queries: `highlights.scm`, `injections.scm` and `tags.scm` are taken
 from the grammar's own `queries/` at the revision — beside the
 grammar, or under the root's in a directory of the grammar's `path`
-(xml's are in `queries/xml`), or at the root. A file in this
+(xml's are in `queries/xml`) or of its name, nvim's layout (vue's are in
+`queries/vue`), or at the root: the first of these holding one. A file
+there saying `; inherits: X`, where `X` is a directory of queries beside
+it that is no grammar — a set several grammars of one repository share,
+vue's `html_tags` — has that directory's file of its name put in front. A file in this
 repository's `queries/` replaces the one of its name — or goes after
 it, when the comments it opens with say `; extends`: a reader gives a
 node two patterns match to the later one, so a few patterns added

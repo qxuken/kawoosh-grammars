@@ -20,7 +20,11 @@ const UPSTREAM: [&str; 3] = ["highlights.scm", "injections.scm", "tags.scm"];
 
 /// A grammar's queries before inheritance: the checkout's (beside the
 /// grammar, else under the root's `queries/` in a directory of the
-/// grammar's path — xml's are in `queries/xml` — else at the root),
+/// grammar's path — xml's are in `queries/xml` — or of its name, as
+/// nvim lays them out — vue's are in `queries/vue` — else at the root;
+/// the first of these holding a query file), with in front of each
+/// file what it says it inherits from a directory of queries beside
+/// its own in the checkout that is no grammar (vue's `html_tags`),
 /// then every `.scm` of the repository's
 /// `queries/` — which replaces the checkout's of that name, or, saying
 /// `; extends` in the comments at its top, goes after it: a reader
@@ -31,13 +35,16 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
     let dirs = [
         checkout.join(&spec.source.path).join("queries"),
         checkout.join("queries").join(&spec.source.path),
+        checkout.join("queries").join(&spec.name),
         checkout.join("queries"),
     ];
-    if let Some(dir) = dirs.iter().find(|d| d.is_dir()) {
+    let holds = |d: &Path| UPSTREAM.iter().any(|n| d.join(n).is_file());
+    if let Some(dir) = dirs.iter().find(|d| holds(d)) {
         for name in UPSTREAM {
             let file = dir.join(name);
             if file.is_file() && !spec.skip.iter().any(|s| s == name) {
-                set.insert(name.to_string(), read(&file)?);
+                let text = read(&file)?;
+                set.insert(name.to_string(), with_siblings(&text, name, dir, spec)?);
             }
         }
     }
@@ -62,9 +69,10 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
             }
         }
     }
+    let upstream = dirs.iter().find(|d| holds(d)).map(|d| d.as_path());
     for (file, text) in &set {
         for base in said_inherits(text) {
-            if !spec.inherits.contains(&base) {
+            if !spec.inherits.contains(&base) && !sibling(upstream, &base) {
                 return Err(format!(
                     "{file} says `; inherits: {base}`: name it in grammar.toml's [queries] inherits"
                 ));
@@ -72,6 +80,52 @@ pub fn own(checkout: &Path, spec: &Spec) -> Result<Set, String> {
         }
     }
     Ok(set)
+}
+
+/// `text`, file `name` of the checkout's directory `dir`, with the same
+/// file of each directory beside `dir` it says it inherits in front —
+/// a set of queries several grammars of one repository share that is
+/// no grammar itself (vue's `html_tags`), theirs first in turn. One it
+/// says that is no such directory is left to `[queries] inherits`.
+fn with_siblings(text: &str, name: &str, dir: &Path, spec: &Spec) -> Result<String, String> {
+    fn go(
+        text: &str,
+        name: &str,
+        dir: &Path,
+        spec: &Spec,
+        path: &mut Vec<String>,
+    ) -> Result<String, String> {
+        let mut out = String::new();
+        for base in said_inherits(text) {
+            let sibling = dir.parent().map(|p| p.join(&base));
+            let Some(sibling) = sibling.filter(|s| s.is_dir() && !spec.inherits.contains(&base))
+            else {
+                continue;
+            };
+            if path.contains(&base) {
+                return Err(format!("{name}: queries inherit in a circle at `{base}`"));
+            }
+            let file = sibling.join(name);
+            if file.is_file() {
+                path.push(base.clone());
+                out.push_str(&go(&read(&file)?, name, &sibling, spec, path)?);
+                path.pop();
+                if !out.ends_with('\n') {
+                    out.push('\n');
+                }
+            }
+        }
+        out.push_str(text);
+        Ok(out)
+    }
+    go(text, name, dir, spec, &mut Vec::new())
+}
+
+/// Whether a query file says `; inherits:` a directory beside `dir` in
+/// the checkout — resolved there ([`with_siblings`]), not a grammar.
+fn sibling(dir: Option<&Path>, base: &str) -> bool {
+    dir.and_then(Path::parent)
+        .is_some_and(|p| p.join(base).is_dir())
 }
 
 /// Whether a query file says `; extends` — nvim's word for it — in the
@@ -243,6 +297,43 @@ mod tests {
         let mut s = spec("tsx", &t.join("grammars/tsx"), &[]);
         s.source.path = "tsx".into();
         assert_eq!(own(&checkout, &s).unwrap()["highlights.scm"], "tsx's");
+        std::fs::remove_dir_all(t).unwrap();
+    }
+
+    #[test]
+    fn nvim_s_layout_and_a_shared_set_of_queries() {
+        let t = temp("nvim");
+        let checkout = t.join("checkout");
+        put(&checkout.join("src/parser.c"), "");
+        put(
+            &checkout.join("queries/vue/highlights.scm"),
+            "; inherits: html_tags\n(interpolation) @punctuation",
+        );
+        put(
+            &checkout.join("queries/vue/injections.scm"),
+            "(raw_text) @injection.content",
+        );
+        put(
+            &checkout.join("queries/html_tags/highlights.scm"),
+            "(tag_name) @tag",
+        );
+        let dir = t.join("grammars/vue");
+        let set = own(&checkout, &spec("vue", &dir, &[])).unwrap();
+        assert_eq!(
+            set["highlights.scm"],
+            "(tag_name) @tag\n; inherits: html_tags\n(interpolation) @punctuation"
+        );
+        assert_eq!(set["injections.scm"], "(raw_text) @injection.content");
+        // A base that is neither a directory there nor a grammar named.
+        put(
+            &checkout.join("queries/vue/tags.scm"),
+            "; inherits: go\n(x) @name",
+        );
+        assert!(
+            own(&checkout, &spec("vue", &dir, &[]))
+                .unwrap_err()
+                .contains("inherits: go")
+        );
         std::fs::remove_dir_all(t).unwrap();
     }
 
