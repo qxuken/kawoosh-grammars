@@ -1,0 +1,11 @@
+# Teal: Lua with types (`.tl`, and `.d.tl` declarations). The grammar's
+# repository has highlights and locals alone, so `queries/` brings the
+# indents and the outline (`tags.scm`).
+extensions = ["tl"]
+comment = "--"
+comment_block = ["--[[", "]]"]
+
+[source]
+repo = "https://github.com/euclidianAce/tree-sitter-teal"
+rev = "ac6b42ffb23d5d52b582c02508dd3524ac0ba3df"
+license = "MIT"
