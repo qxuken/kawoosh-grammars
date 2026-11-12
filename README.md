@@ -23,7 +23,8 @@ built from.
 lib/x86_64-windows.dll    lib/aarch64-windows.dll
 lib/x86_64-linux.so       lib/aarch64-linux.so      (glibc 2.17 and later)
 lib/x86_64-macos.dylib    lib/aarch64-macos.dylib
-queries/highlights.scm    queries/injections.scm    queries/tags.scm    queries/indents.scm
+queries/highlights.scm    queries/injections.scm    queries/tags.scm
+queries/outline.scm       queries/indents.scm
 LICENSE
 ```
 
@@ -85,6 +86,15 @@ repository's `queries/` replaces the one of its name — or goes after
 it, when the comments it opens with say `; extends`: a reader gives a
 node two patterns match to the later one, so a few patterns added
 change a few captures and the rest stay the grammar's.
+
+`outline.scm` is this repository's optional document-symbol query. It uses
+tree-sitter's tags captures: `@definition.KIND` on the whole definition and
+`@name` on its navigable name. Whole block ranges keep children under their
+parent; more specific patterns come first when two match the same definition.
+Kawoosh prefers it to `tags.scm`. The configuration grammars nginx, ini,
+git_config, ssh_config and dotenv ship outlines so their blocks, sections,
+directives and assignments are available in the symbols picker without an
+LSP. INI detection includes `.editorconfig`, `.npmrc` and `.pypirc`.
 
 ```scheme
 ; grammars/zig/queries/highlights.scm

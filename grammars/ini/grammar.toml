@@ -1,4 +1,5 @@
 extensions = ["ini", "cfg"]
+filenames = [".editorconfig", ".npmrc", ".pypirc"]
 comment = ";"
 
 [source]
